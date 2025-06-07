@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">OrtinInPulse</string>
+    <string name="initialization">Инициализация…</string>
+    <string name="pulse">Пульс:</string>
+    <string name="pulse_scale">уд/мин</string>
+    <string name="time_to_end">Время до конца:</string>
+    <string name="seconds">с</string>
+    <string name="stop">Остановить</string>
+    <string name="measure">Измерить</string>
+    <string name="pause">Пауза</string>
+    <string name="start">Старт</string>
+    <string name="story">История</string>
+    <string name="graph">График</string>
+
+    <string name="pulse_graph">График пульса</string>
+    <string name="last_measures">Последние 10 измерений</string>
+    <string name="no_data">Нет данных для отображения</string>
+    <string name="info">Информация:</string>
+    <string name="min_pulse">Минимальный пульс:</string>
+    <string name="max_pulse">Максимальный пульс:</string>
+    <string name="avg_pulse">Средний пульс:</string>
+</resources>
