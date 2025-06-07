@@ -257,13 +257,13 @@ fun HeartScreen(navigationVM: MainViewModel) {
                     currentIntervalRates.takeIf { it.isNotEmpty() }?.average()?.toInt() ?: 0
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = stringResource(R.string.pulse) + currentAvgPulse + stringResource(R.string.pulse_scale),
+                        text = stringResource(R.string.pulse) + " $currentAvgPulse " + stringResource(R.string.pulse_scale),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
                     )
                     VerticalScreenSpacer(8.dp)
                     Text(
-                        text = stringResource(R.string.time_to_end) + timeLeft + stringResource(R.string.seconds),
+                        text = stringResource(R.string.time_to_end) + " $timeLeft " + stringResource(R.string.seconds),
                         fontSize = 18.sp
                     )
                 }
@@ -271,7 +271,7 @@ fun HeartScreen(navigationVM: MainViewModel) {
 
             if (showCamera && !isMeasuring && showLastPulse && avgPulse > 0) {
                 Text(
-                    text = stringResource(R.string.pulse) + avgPulse + stringResource(R.string.pulse_scale),
+                    text = stringResource(R.string.pulse) + " $avgPulse " + stringResource(R.string.pulse_scale),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )

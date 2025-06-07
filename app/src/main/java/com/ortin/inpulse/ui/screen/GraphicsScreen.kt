@@ -115,7 +115,7 @@ fun GraphicsScreen(navigationVM: MainViewModel) {
                         modifier = Modifier.width(180.dp)
                     )
                     Text(
-                        text = minHeartRate.toString() + stringResource(R.string.pulse_scale),
+                        text = minHeartRate.toString() + " " + stringResource(R.string.pulse_scale),
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Bold
                     )
@@ -128,7 +128,7 @@ fun GraphicsScreen(navigationVM: MainViewModel) {
                         modifier = Modifier.width(180.dp)
                     )
                     Text(
-                        text = maxHeartRate.toString() + stringResource(R.string.pulse_scale),
+                        text = maxHeartRate.toString() + " " + stringResource(R.string.pulse_scale),
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Bold
                     )
@@ -141,7 +141,7 @@ fun GraphicsScreen(navigationVM: MainViewModel) {
                         modifier = Modifier.width(180.dp)
                     )
                     Text(
-                        text = avgHeartRate.toString() + stringResource(R.string.pulse_scale),
+                        text = avgHeartRate.toString() + " " + stringResource(R.string.pulse_scale),
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Bold
                     )

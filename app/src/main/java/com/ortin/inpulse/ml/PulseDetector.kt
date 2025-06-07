@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.os.Handler
 import android.os.Looper
 import org.tensorflow.lite.Interpreter
-import org.tensorflow.lite.gpu.GpuDelegate
 import java.io.Closeable
 import java.io.File
 import java.io.FileInputStream
@@ -22,7 +21,6 @@ class PulseDetector(
     private val modelName: String = "model.tflite",
 ) : Closeable {
     private var interpreter: Interpreter? = null
-    private var gpuDelegate: GpuDelegate? = null
     private var isInitialized = false
 
     private val frameBuffer: Queue<Float> = LinkedList()
@@ -411,7 +409,6 @@ class PulseDetector(
     override fun close() {
         stopMeasurement()
         interpreter?.close()
-        gpuDelegate?.close()
         isInitialized = false
     }
 }
