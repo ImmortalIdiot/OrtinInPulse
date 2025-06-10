@@ -68,4 +68,6 @@ dependencies {
     implementation(libs.tensorflow.lite)
 
     implementation(libs.google.gson)
+
+    implementation(libs.androidx.datastore)
 }

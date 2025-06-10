@@ -8,6 +8,7 @@ composeBom = "2025.06.00"
 cameraxVersion = "1.4.2"
 accompanist = "0.33.2-alpha"
 tensorflowVersion = "2.8.0"
+datastore = "1.1.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -29,6 +30,8 @@ accompanist-permissions = { group = "com.google.accompanist", name = "accompanis
 tensorflow-lite = { group = "org.tensorflow", name = "tensorflow-lite", version.ref = "tensorflowVersion" }
 
 google-gson = { group = "com.google.code.gson", name = "gson", version = "2.11.0" }
+
+androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

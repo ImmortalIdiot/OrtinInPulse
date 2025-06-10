@@ -1,31 +1,43 @@
 package com.ortin.inpulse.data
 
 import android.content.Context
-import android.content.SharedPreferences
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStoreFile
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.flow.first
+import java.lang.reflect.Type
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class MeasurementRepository(context: Context) {
     companion object {
-        private const val PREFS_NAME = "ortin_in_pulse_prefs"
-        private const val MEASUREMENTS_KEY = "measurements"
+        private val MEASUREMENTS_KEY = stringPreferencesKey("measurements")
     }
 
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences(
-        PREFS_NAME, Context.MODE_PRIVATE
+    private val dataStore: DataStore<Preferences> = PreferenceDataStoreFactory.create(
+        produceFile = { context.preferencesDataStoreFile("ortin_in_pulse_prefs") }
     )
+
     private val gson: Gson = GsonBuilder()
         .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeAdapter())
         .create()
 
-    fun getAllMeasurements(): List<MeasurementResult> {
-        val json = sharedPreferences.getString(MEASUREMENTS_KEY, null) ?: return emptyList()
-        
+    suspend fun getAllMeasurements(): List<MeasurementResult> {
+        val preferences = dataStore.data.first()
+        val json = preferences[MEASUREMENTS_KEY] ?: return emptyList()
+
         return try {
             val type = object : TypeToken<List<MeasurementResult>>() {}.type
             val measurements = gson.fromJson<List<MeasurementResult>>(json, type)
@@ -34,53 +46,60 @@ class MeasurementRepository(context: Context) {
             emptyList()
         }
     }
-    
-    fun saveMeasurement(heartRate: Int, confidence: Float): MeasurementResult {
+
+    suspend fun saveMeasurement(heartRate: Int, confidence: Float): MeasurementResult {
         val newMeasurement = MeasurementResult(
             heartRate = heartRate,
             confidence = confidence
         )
-        
+
         val currentMeasurements = getAllMeasurements().toMutableList()
         currentMeasurements.add(newMeasurement)
-        
+
         val json = gson.toJson(currentMeasurements)
-        sharedPreferences.edit().putString(MEASUREMENTS_KEY, json).apply()
-        
+
+        dataStore.edit { preferences ->
+            preferences[MEASUREMENTS_KEY] = json
+        }
+
         return newMeasurement
     }
-    
-    fun deleteMeasurement(id: String) {
+
+    suspend fun deleteMeasurement(id: String) {
         val currentMeasurements = getAllMeasurements().toMutableList()
         val updatedMeasurements = currentMeasurements.filter { it.id != id }
-        
+
         if (updatedMeasurements.size < currentMeasurements.size) {
             val json = gson.toJson(updatedMeasurements)
-            sharedPreferences.edit().putString(MEASUREMENTS_KEY, json).apply()
+            dataStore.edit { preferences ->
+                preferences[MEASUREMENTS_KEY] = json
+            }
         }
     }
-    
-    fun clearAllMeasurements() {
-        sharedPreferences.edit().remove(MEASUREMENTS_KEY).apply()
+
+    suspend fun clearAllMeasurements() {
+        dataStore.edit { preferences ->
+            preferences.remove(MEASUREMENTS_KEY)
+        }
     }
-    
+
     private class LocalDateTimeAdapter : JsonSerializer<LocalDateTime>,
         JsonDeserializer<LocalDateTime> {
-            
+
         private val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
-        
+
         override fun serialize(
             src: LocalDateTime,
-            typeOfSrc: java.lang.reflect.Type,
-            context: com.google.gson.JsonSerializationContext
-        ): com.google.gson.JsonElement {
-            return com.google.gson.JsonPrimitive(formatter.format(src))
+            typeOfSrc: Type,
+            context: JsonSerializationContext
+        ): JsonElement {
+            return JsonPrimitive(formatter.format(src))
         }
 
         override fun deserialize(
-            json: com.google.gson.JsonElement,
-            typeOfT: java.lang.reflect.Type,
-            context: com.google.gson.JsonDeserializationContext
+            json: JsonElement,
+            typeOfT: Type,
+            context: JsonDeserializationContext
         ): LocalDateTime {
             return LocalDateTime.parse(json.asString, formatter)
         }
